@@ -22,8 +22,8 @@ contract GoFundMe {
         _;
     }
 
-    constructor(address fundPriceFeed) {
-        priceFeed = AggregatorV3Interface(fundPriceFeed);
+    constructor(address pricedFeedAddress) {
+        priceFeed = AggregatorV3Interface(pricedFeedAddress);
         owner = msg.sender;
     }
 
