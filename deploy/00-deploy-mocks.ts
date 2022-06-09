@@ -25,6 +25,7 @@ const deployMocks: DeployFunction = async (hardHatRuntime: HardhatRuntimeEnviron
         log("Please run `yarn hardhat console` to interact with the contracts!");
         log("==================================");
     }
-}
+};
+
 export default deployMocks;
 deployMocks.tags = ["all", "mocks"];

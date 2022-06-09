@@ -2,6 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 
 import "hardhat-deploy";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomiclabs/hardhat-ethers"
 
 import "./tasks/block-number";
 
