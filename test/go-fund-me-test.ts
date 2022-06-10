@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { network, deployments, ethers } from "hardhat";
-import { assert } from "chai"
+import { assert, expect } from "chai"
 import { GoFundMe, MockV3Aggregator } from "../typechain-types";
 import { developmentChains } from "../helper-hardhat-config"
 
@@ -21,10 +21,28 @@ describe("GoFundMe", () => {
     });
 
     describe("constructor", () => {
-        it("sets the aggregator addresses correctly", async () => {
+        it("Sets the aggregator addresses correctly", async () => {
             const response = await goFundMe.getPriceFeed();
             assert.equal(response, mockV3Aggregator.address)
-        })
+        });
+    });
+
+    describe("fund", function () {
+        it("Fails if did not send enough ETH", async () => {
+            await expect(goFundMe.fund()).to.be.revertedWith("You need to fund with more ETH!")
+        });
+
+        it("Updates the amount in the funded address", async () => {
+            await goFundMe.fund({ value: ethers.utils.parseEther("1") });
+            const response = await goFundMe.getAddressToAmountFunded(deployer.address);
+            assert.equal(response.toString(), ethers.utils.parseEther("1").toString());
+        });
+
+        it("Adds a funder to funders", async () => {
+            await goFundMe.fund({ value: ethers.utils.parseEther("1") });
+            const response = await goFundMe.getFunder(0);
+            assert.equal(response, deployer.address);
+        });
     });
 
 });
