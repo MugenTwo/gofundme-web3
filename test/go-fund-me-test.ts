@@ -45,4 +45,89 @@ describe("GoFundMe", () => {
         });
     });
 
+    describe("withdraw", function () {
+        beforeEach(async () => {
+            await goFundMe.fund({ value: ethers.utils.parseEther("1") });
+        })
+
+        it("Withdraw from 1 funder", async () => {
+            const startingFundMeBalance = await goFundMe.provider.getBalance(goFundMe.address);
+            const startingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
+
+            const transactionResponse = await goFundMe.withdraw();
+            const transactionReceipt = await transactionResponse.wait();
+            const { gasUsed, effectiveGasPrice } = transactionReceipt;
+            const gasCost = gasUsed.mul(effectiveGasPrice);
+
+            const endingFundMeBalance = await goFundMe.provider.getBalance(goFundMe.address);
+            const endingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
+
+            assert.equal(endingFundMeBalance.toString(), "0");
+            assert.equal(
+                startingFundMeBalance.add(startingDeployerBalance).toString(),
+                endingDeployerBalance.add(gasCost).toString()
+            );
+        });
+
+        it("Withdraw from multiple funders", async () => {
+            const accounts = await ethers.getSigners()
+            await goFundMe
+                .connect(accounts[1])
+                .fund({ value: ethers.utils.parseEther("1") });
+            await goFundMe
+                .connect(accounts[2])
+                .fund({ value: ethers.utils.parseEther("1") });
+            await goFundMe
+                .connect(accounts[3])
+                .fund({ value: ethers.utils.parseEther("1") });
+            await goFundMe
+                .connect(accounts[4])
+                .fund({ value: ethers.utils.parseEther("1") });
+            await goFundMe
+                .connect(accounts[5])
+                .fund({ value: ethers.utils.parseEther("1") });
+
+            const startingFundMeBalance = await goFundMe.provider.getBalance(goFundMe.address);
+            const startingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
+            const transactionResponse = await goFundMe.cheaperWithdraw();
+
+            const transactionReceipt = await transactionResponse.wait();
+            const { gasUsed, effectiveGasPrice } = transactionReceipt;
+            const withdrawGasCost = gasUsed.mul(effectiveGasPrice);
+
+            console.log(`GasCost: ${withdrawGasCost}`);
+            console.log(`GasUsed: ${gasUsed}`);
+            console.log(`GasPrice: ${effectiveGasPrice}`);
+
+            const endingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
+
+            assert.equal(
+                startingFundMeBalance.add(startingDeployerBalance).toString(),
+                endingDeployerBalance.add(withdrawGasCost).toString()
+            );
+
+            await expect(goFundMe.getFunder(0)).to.be.reverted
+            assert.equal(
+                (await goFundMe.getAddressToAmountFunded(accounts[1].address)).toString(),
+                "0"
+            );
+            assert.equal(
+                (await goFundMe.getAddressToAmountFunded(accounts[2].address)).toString(),
+                "0"
+            );
+            assert.equal(
+                (await goFundMe.getAddressToAmountFunded(accounts[3].address)).toString(),
+                "0"
+            );
+            assert.equal(
+                (await goFundMe.getAddressToAmountFunded(accounts[4].address)).toString(),
+                "0"
+            );
+            assert.equal(
+                (await goFundMe.getAddressToAmountFunded(accounts[5].address)).toString(),
+                "0"
+            );
+        });
+    });
+
 });

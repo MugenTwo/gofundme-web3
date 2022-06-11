@@ -11,7 +11,7 @@ contract GoFundMe {
     
     using PriceConverter for uint256;
 
-    uint256 public constant MINIMUM_USD = 50 * 10**18;
+    uint256 public constant MINIMUM_USD = 50 * 10 ** 18;
     address private immutable owner;
     address[] private funders;
     mapping(address => uint256) private fundsByAddress;
@@ -68,11 +68,9 @@ contract GoFundMe {
         require(success);
     }
 
-    function getAddressToAmountFunded(address fundingAddress)
-        public
-        view
-        returns (uint256)
-    {
+    function getAddressToAmountFunded(
+        address fundingAddress
+    ) public view returns (uint256) {
         return fundsByAddress[fundingAddress];
     }
 
@@ -91,5 +89,5 @@ contract GoFundMe {
     function getPriceFeed() public view returns (AggregatorV3Interface) {
         return priceFeed;
     }
-    
+
 }
