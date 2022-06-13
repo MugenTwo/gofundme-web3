@@ -106,6 +106,13 @@ describe("GoFundMe", () => {
                 );
             }
         });
+
+        it("Only owner allowed to withdraw", async function () {
+            const accounts = await ethers.getSigners();
+            const goFundMeConnectedContract = await goFundMe.connect(accounts[1]);
+
+            await expect(goFundMeConnectedContract.withdraw()).to.be.revertedWithCustomError(goFundMe, "GoFundMe__NotOwner")
+        });
     });
 
 });
