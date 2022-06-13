@@ -70,22 +70,13 @@ describe("GoFundMe", () => {
         });
 
         it("Withdraw from multiple funders", async () => {
-            const accounts = await ethers.getSigners()
-            await goFundMe
-                .connect(accounts[1])
-                .fund({ value: ethers.utils.parseEther("1") });
-            await goFundMe
-                .connect(accounts[2])
-                .fund({ value: ethers.utils.parseEther("1") });
-            await goFundMe
-                .connect(accounts[3])
-                .fund({ value: ethers.utils.parseEther("1") });
-            await goFundMe
-                .connect(accounts[4])
-                .fund({ value: ethers.utils.parseEther("1") });
-            await goFundMe
-                .connect(accounts[5])
-                .fund({ value: ethers.utils.parseEther("1") });
+            const accounts = await ethers.getSigners();
+
+            for (let i = 1; i < 6; i++) {
+                await goFundMe
+                    .connect(accounts[i])
+                    .fund({ value: ethers.utils.parseEther("1") });
+            }
 
             const startingFundMeBalance = await goFundMe.provider.getBalance(goFundMe.address);
             const startingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
@@ -107,26 +98,13 @@ describe("GoFundMe", () => {
             );
 
             await expect(goFundMe.getFunder(0)).to.be.reverted
-            assert.equal(
-                (await goFundMe.getAddressToAmountFunded(accounts[1].address)).toString(),
-                "0"
-            );
-            assert.equal(
-                (await goFundMe.getAddressToAmountFunded(accounts[2].address)).toString(),
-                "0"
-            );
-            assert.equal(
-                (await goFundMe.getAddressToAmountFunded(accounts[3].address)).toString(),
-                "0"
-            );
-            assert.equal(
-                (await goFundMe.getAddressToAmountFunded(accounts[4].address)).toString(),
-                "0"
-            );
-            assert.equal(
-                (await goFundMe.getAddressToAmountFunded(accounts[5].address)).toString(),
-                "0"
-            );
+
+            for (let i = 1; i < 6; i++) {
+                assert.equal(
+                    (await goFundMe.getAddressToAmountFunded(accounts[i].address)).toString(),
+                    "0"
+                );
+            }
         });
     });
 
