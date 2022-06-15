@@ -37,21 +37,6 @@ contract GoFundMe {
     }
 
     function withdraw() public onlyOwner {
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < funders.length;
-            funderIndex++
-        ) {
-            address funder = funders[funderIndex];
-            fundsByAddress[funder] = 0;
-        }
-        funders = new address[](0);
-
-        (bool success, ) = owner.call{value: address(this).balance}("");
-        require(success);
-    }
-
-    function cheaperWithdraw() public onlyOwner {
         address[] memory currentFunders = funders;
 
         for (

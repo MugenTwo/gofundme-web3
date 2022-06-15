@@ -80,7 +80,7 @@ describe("GoFundMe", () => {
 
             const startingFundMeBalance = await goFundMe.provider.getBalance(goFundMe.address);
             const startingDeployerBalance = await goFundMe.provider.getBalance(deployer.address);
-            const transactionResponse = await goFundMe.cheaperWithdraw();
+            const transactionResponse = await goFundMe.withdraw();
 
             const transactionReceipt = await transactionResponse.wait();
             const { gasUsed, effectiveGasPrice } = transactionReceipt;
