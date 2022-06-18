@@ -1,13 +1,35 @@
-# Sample Hardhat Project
+# Go fund me in web3
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+# Techstack:
+1. Ethereum with Chainlink.
+2. Solidity for smart contracts.
+3. Hardhat Framework.
+4. Typescript.
+5. Chai + Mocha for tests.
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+## 1. To work with the project:
 ```
+yarn install
+```
+
+## 2. To see all available commands:
+```
+yarn hardhat help
+```
+
+## 3. To run unit tests:
+```
+yarn hardhat test
+```
+
+## 4. To run:
+```
+yarn hardhat node
+```
+which automatically deploy the contract + mock of the chainlink price provider if on dev network
+
+## 5. To interact with the contract:
+```
+yarn hardhat console
+```
+There is a dapp UI as well to interact with the contract.
