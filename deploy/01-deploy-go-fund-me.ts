@@ -29,4 +29,4 @@ const deployGoFundMe: DeployFunction = async (hardHatRuntime: HardhatRuntimeEnvi
 };
 
 export default deployGoFundMe;
-deployGoFundMe.tags = ["all", "fundMe"];
+deployGoFundMe.tags = ["all", "goFundMe"];
